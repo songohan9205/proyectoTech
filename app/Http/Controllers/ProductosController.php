@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\ProductosModel;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Controlador para el CRUD de productos

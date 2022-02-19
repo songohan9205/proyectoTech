@@ -19,3 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::resource('productos', 'ProductosController');
+
+Route::post('/carrito/agregar', 'CarritoController@agregarProducto')->name('carrito/agregar');
+Route::get('/carrito/resumen', 'CarritoController@resumenCarrito')->name('carrito/resumen');
+Route::delete('/carrito/eliminar', 'CarritoController@eliminarProducto')->name('carrito/eliminar');
