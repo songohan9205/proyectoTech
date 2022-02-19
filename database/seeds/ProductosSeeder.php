@@ -18,8 +18,6 @@ class ProductosSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('productos')->truncate();
-
         DB::table('productos')->insert([
             [
                 'nombre' => 'Balón Golty',                

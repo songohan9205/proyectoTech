@@ -14,20 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Ruta cuando no han generado Token
+//Ruta cuando no han generado Token y es obligatorio
 Route::get('/login', function () {
     return response()->json(['Estado' => false, 'Respuesta' => 'Acceso no válido, debe autenticarse']);
 })->name('login');
 
-//Productos
-Route::resource('productos', 'ProductosController');
-
-//Carrito de compras
-Route::post('/carrito/agregar', 'CarritoController@agregarProducto')->name('carrito/agregar');
-Route::get('/carrito/resumen', 'CarritoController@resumenCarrito')->name('carrito/resumen');
-Route::delete('/carrito/eliminar', 'CarritoController@eliminarProducto')->name('carrito/eliminar');
-
-//Autenticación de usuarios
+//Rutas con token Obligatorio
 Route::group([
     'prefix' => 'auth'
 ], function () {
@@ -35,9 +27,19 @@ Route::group([
     Route::post('/usuarios/registro', 'AuthController@registrarUsuario');
 
     Route::group([
-      'middleware' => 'auth:api'
-    ], function() {
-        Route::get('logout', 'AuthController@cerrarSesion');
-        Route::get('user', 'AuthController@infoUsuario');
+        'middleware' => 'auth:api'
+    ], function () {
+        //Productos
+        Route::resource('productos', 'ProductosController');
+
+        //Carrito de compras
+        Route::post('/carrito/agregar', 'CarritoController@agregarProducto')->name('carrito/agregar');
+        Route::get('/carrito/resumen', 'CarritoController@resumenCarrito')->name('carrito/resumen');
+        Route::get('/carrito/comprar', 'CarritoController@compraProductos')->name('carrito/comprar');
+        Route::delete('/carrito/eliminar', 'CarritoController@eliminarProducto')->name('carrito/eliminar');
+
+        //Usuarios
+        Route::get('usuarios/finalizar', 'AuthController@cerrarSesion')->name('usuarios/finalizar');
+        Route::get('usuarios/info', 'AuthController@infoUsuario')->name('usuarios/info');
     });
 });

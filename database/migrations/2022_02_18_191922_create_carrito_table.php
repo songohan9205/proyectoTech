@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
+use \Illuminate\Support\Facades\DB;
 /**
 * Migración para guardar los datos del carrito de compras
 * @author Johan Morales
@@ -32,7 +32,7 @@ class CreateCarritoTable extends Migration
      * @return void
      */
     public function down()
-    {
+    {        
         Schema::dropIfExists('carrito');
     }
 }

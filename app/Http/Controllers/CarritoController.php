@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use \Illuminate\Support\Facades\DB;
 use App\ProductosModel;
+use App\CompraModel;
+use App\DetalleCompraModel;
 use Cart;
 use Illuminate\Support\Facades\Log;
 
@@ -23,22 +26,21 @@ class CarritoController extends Controller
      */
     public function agregarProducto(Request $request)
     {
-
         try {
+            $usuario = $this->dataUsuario($request);
+
             $validarProducto = $this->validarProducto($request->id, $request->cantidad);
             $validarProducto = (array) $validarProducto->getData();
 
             if ($validarProducto['Estado']) {
-
-                $userId = 1;
-                Cart::session($userId)->add(array(
+                Cart::session($usuario['id'])->add(array(
                     'id'    => $request->id,
                     'name'  => $validarProducto['Data']->nombre,
                     'price' => $validarProducto['Data']->precio,
                     'quantity' => $request->cantidad,
                     'attributes' => array()
                 ));
-                return response()->json(['Estado' => true, 'Respuesta' => 'Producto agregado al carrito', 'Data' => Cart::session($userId)->getContent()], 200);
+                return response()->json(['Estado' => true, 'Respuesta' => 'Producto agregado al carrito', 'Data' => Cart::session($usuario['id'])->getContent()], 200);
             }
 
             return $validarProducto;
@@ -56,8 +58,8 @@ class CarritoController extends Controller
     public function resumenCarrito(Request $request)
     {
         try {
-            $userId = 1;
-            return response()->json(['Estado' => true, 'Respuesta' => 'Producto agregado al carrito', 'Data' => Cart::session($userId)->getContent()], 200);
+            $usuario = $this->dataUsuario($request);
+            return response()->json(['Estado' => true, 'Respuesta' => 'Productos del carrito usuario: ' . $usuario['name'], 'Data' => Cart::session($usuario['id'])->getContent()], 200);
         } catch (\Throwable $e) {
             return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción', 'Data' => $e->getMessage()], 500);
         }
@@ -69,15 +71,87 @@ class CarritoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response JSON con la respuesta del proceso
      */
-    public function eliminarProducto(Request $request) {
+    public function eliminarProducto(Request $request)
+    {
         try {
-            $userId = 1;
-            Cart::session($userId)->remove($request->id);
-            return response()->json(['Estado' => true, 'Respuesta' => 'Producto eliminado del carrito', 'Data' => Cart::session($userId)->getContent()], 200);
-        }
-        catch (\Throwable $e) {
+            $usuario = $this->dataUsuario($request);
+            Cart::session($usuario['id'])->remove($request->id);
+            return response()->json(['Estado' => true, 'Respuesta' => 'Producto eliminado del carrito', 'Data' => Cart::session($usuario['id'])->getContent()], 200);
+        } catch (\Throwable $e) {
             return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción', 'Data' => $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Función para la compra de productos del carrito
+     * @author Johan Morales     
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response JSON con la respuesta del proceso
+     */
+    public function compraProductos(Request $request)
+    {
+        try {
+
+            $usuario = $this->dataUsuario($request);
+            if (!Cart::session($usuario['id'])->isEmpty()) {
+                $productos = Cart::session($usuario['id'])->getTotalQuantity();
+                $total = Cart::session($usuario['id'])->getTotal();
+
+                //Guardar la compra
+                try {
+                    CompraModel::create([
+                        'user_id'   => $usuario['id'],
+                        'total'     => $total,
+                        'productos' => $productos
+                    ]);
+                } catch (\Throwable $e) {
+                    return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción al guardar la compra', 'Data' => $e->getMessage()], 500);
+                }
+
+                //Guardar el detalle de la compra
+                try {
+                    $compra = CompraModel::latest('id')->first();
+                    $items = \Cart::getContent();
+                    foreach ($items as $data) {
+                        DetalleCompraModel::create([
+                            'compras_id'  => $compra['id'],
+                            'producto_id' => $data->id,
+                            'precio'      => $data->price,
+                            'cantidad'    => $data->quantity
+                        ]);
+
+                        ProductosModel::where('id', $data->id)
+                            ->update(['unidades' => DB::raw('unidades - '.$data->quantity)]);
+                    }
+                } catch (\Throwable $e) {
+                    return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción al guardar el detalle de la compra', 'Data' => $e->getMessage()], 500);
+                }
+
+                $respuesta = array(
+                    'id'        => $usuario['id'],
+                    'usuario'   => $usuario['name'],
+                    'productos' => $productos,
+                    'total'     => $total,
+                    'detalle'   => $items
+                );
+                Cart::session($usuario['id'])->clear();
+                return response()->json(['Estado' => true, 'Respuesta' => 'Su compra ha sido exitosa', 'Data' => $respuesta], 200);
+            }
+            return response()->json(['Estado' => true, 'Respuesta' => 'No tiene productos en el carrito de compras', 'Data' => []], 200);
+        } catch (\Throwable $e) {
+            return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción', 'Data' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Función para consultar la información del usuario logeado
+     * @author Johan Morales          
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response JSON con la respuesta del proceso
+     */
+    private function dataUsuario(Request $request)
+    {
+        return $request->user();
     }
 
 

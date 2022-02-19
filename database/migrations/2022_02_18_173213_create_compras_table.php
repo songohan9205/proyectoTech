@@ -21,9 +21,11 @@ class CreateComprasTable extends Migration
         Schema::create('compras', function (Blueprint $table) {
             $table->bigIncrements('id')->index();
             $table->bigInteger('user_id')->unsigned(); 
-            $table->foreign('user_id')->references('id')->on('users');            
-            $table->string("compra");
+            $table->float("total", 15,2);
+            $table->integer("productos");
             $table->timestamps();
+            
+            $table->foreign('user_id')->references('id')->on('users');            
         });
     }
 
