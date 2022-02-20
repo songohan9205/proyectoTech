@@ -42,5 +42,8 @@ Route::group([
         //Usuarios
         Route::get('/usuarios/finalizar', 'AuthController@cerrarSesion')->name('usuarios/finalizar');
         Route::get('/usuarios/info', 'AuthController@infoUsuario')->name('usuarios/info');
+
+        //Reporte ventas
+        Route::get('/reporte/ventas', 'ReporteController@reporteVentas')->name('/reporte/ventas');
     });
 });

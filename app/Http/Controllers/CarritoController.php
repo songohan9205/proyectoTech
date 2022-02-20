@@ -140,7 +140,7 @@ class CarritoController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción', 'Data' => $e->getMessage()], 500);
         }
-    }
+    }   
 
     /**
      * Función para consultar la información del usuario logeado
