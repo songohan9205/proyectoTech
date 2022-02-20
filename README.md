@@ -30,15 +30,20 @@ composer update
 php artisan migrate
 ```
 
-5. Comando para ejecutar el seed creado para la tabla productos
+5. Comando para generar las llaves
+```
+php artisan passport:install
+```
+
+6. Comando para ejecutar el seed creado para la tabla productos
 ```
 php artisan db:seed
 ```
 
-6. Ejecutar comando para el servidor incorporado de PHP
+7. Ejecutar comando para el servidor incorporado de PHP
 ```
 php artisan serve
 ```
-7. La documentación del proyecto la podrá visualizar en la siguiente url: <a href="http://127.0.0.1:8000/api/documentation" target="_blank"> http://127.0.0.1:8000/api/documentation </a>
-**Para visualizar la documentación el servidor incorporado de PHP debe esstar arriba**
-**Por defecto carga por el puerto 8000, salvo alguna configugración específica del entorno local utilizado**
+8. La documentación del proyecto la podrá visualizar en la siguiente url: <a href="http://127.0.0.1:8000/api/documentation" target="_blank"> http://127.0.0.1:8000/api/documentation </a>
+**Para visualizar la documentación el servidor incorporado de PHP debe esstar arriba.**<br>
+**Por defecto carga por el puerto 8000, salvo alguna configuración específica del entorno local utilizado.**
