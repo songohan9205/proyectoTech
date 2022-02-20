@@ -23,14 +23,19 @@ Route::get('/login', function () {
 Route::group([
     'prefix' => 'auth'
 ], function () {
-    Route::post('/usuarios/login', 'AuthController@login');
-    Route::post('/usuarios/registro', 'AuthController@registrarUsuario');
+    Route::post('/usuarios/login', 'AuthController@login')->name('usuarios/login');
+    Route::post('/usuarios/registro', 'AuthController@registrarUsuario')->name('usuarios/registro');
 
     Route::group([
         'middleware' => 'auth:api'
     ], function () {
         //Productos
-        Route::resource('productos', 'ProductosController');
+        //Route::resource('productos', 'ProductosController');
+        Route::get('/productos', 'ProductosController@index')->name('productos');
+        Route::post('/productos/nuevo', 'ProductosController@nuevo')->name('productos/nuevo');
+        Route::get('/productos/buscar/{id}', 'ProductosController@buscar')->name('productos/buscar');
+        Route::put('/productos/actualizar/{id}', 'ProductosController@actualizar')->name('productos/actualizar');
+        Route::delete('/productos/eliminar/{id}', 'ProductosController@eliminar')->name('productos/eliminar');
         Route::post('/productos/carga', 'ProductosController@cargaMasiva')->name('productos/carga');
 
         //Carrito de compras
@@ -44,6 +49,6 @@ Route::group([
         Route::get('/usuarios/info', 'AuthController@infoUsuario')->name('usuarios/info');
 
         //Reporte ventas
-        Route::get('/reporte/ventas', 'ReporteController@reporteVentas')->name('/reporte/ventas');
+        Route::post('/reporte/ventas', 'ReporteController@reporteVentas')->name('/reporte/ventas');
     });
 });

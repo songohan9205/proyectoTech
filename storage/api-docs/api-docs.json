@@ -1,0 +1,815 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "ProyectoTech",
+        "description": "Documentación proyectoTech (CRUD de productos y carga masiva - Carrito de Compras)",
+        "contact": {
+            "email": "johan33@hotmail.es"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api/",
+            "description": "Desarrollo ProyectoTech"
+        }
+    ],
+    "paths": {
+        "/auth/usuarios/registro": {
+            "post": {
+                "tags": [
+                    "Usuarios - Autenticación"
+                ],
+                "summary": "Nuevo usuario",
+                "description": "Servicio para el registro de un nuevo usuario",
+                "operationId": "usuarios/registro",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Nombre del usuario a registrar",
+                                        "type": "string",
+                                        "maxLength": 150,
+                                        "example": "Johan"
+                                    },
+                                    "email": {
+                                        "description": "Correo del usuario (utilizado para el login)",
+                                        "type": "string",
+                                        "example": "correo@ejemplo.com"
+                                    },
+                                    "password": {
+                                        "description": "Contraseña del usuario",
+                                        "type": "string",
+                                        "example": "contrasena123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                }
+            }
+        },
+        "/auth/usuarios/login": {
+            "post": {
+                "tags": [
+                    "Usuarios - Autenticación"
+                ],
+                "summary": "Login",
+                "description": "Servicio para la autenticación del usuario y la generación del token, que debe ser utilizado para consumir los Endpoints",
+                "operationId": "usuarios/login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "Correo registrado",
+                                        "type": "string",
+                                        "example": "correo@ejemplo.com"
+                                    },
+                                    "password": {
+                                        "description": "Contraseña registrada",
+                                        "type": "string",
+                                        "example": "contrasena123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                }
+            }
+        },
+        "/auth/usuarios/info": {
+            "get": {
+                "tags": [
+                    "Usuarios - Autenticación"
+                ],
+                "summary": "Información del usuario",
+                "description": "Servicio para ver la información del usuario validado por el token que se está utilizando",
+                "operationId": "usuarios/info",
+                "requestBody": {},
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/carrito/agregar": {
+            "post": {
+                "tags": [
+                    "Carrito"
+                ],
+                "summary": "Agregar productos al carrito",
+                "description": "Servicio para adición de productos al carrito de compra",
+                "operationId": "carrito/agregar",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "ID del producto a comprar",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "cantidad": {
+                                        "description": "Cantidad a comprar del producto agregado",
+                                        "type": "integer",
+                                        "example": 20
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/carrito/resumen": {
+            "get": {
+                "tags": [
+                    "Carrito"
+                ],
+                "summary": "Resumen carrito",
+                "description": "Servicio para consultar los productos agregados al carrito",
+                "operationId": "carrito/resumen",
+                "requestBody": {},
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/carrito/eliminar": {
+            "delete": {
+                "tags": [
+                    "Carrito"
+                ],
+                "summary": "Eliminar productos carrito",
+                "description": "Servicio para eliminar productos agregados al carrito",
+                "operationId": "carrito/eliminar",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "ID del producto a eliminar del carrito",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/carrito/comprar": {
+            "get": {
+                "tags": [
+                    "Carrito"
+                ],
+                "summary": "Finalizar compra",
+                "description": "Servicio para realizar la compra de los productos agregados al carrito",
+                "operationId": "carrito/comprar",
+                "requestBody": {},
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/productos": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Listar productos",
+                "description": "Servicio para visualizar todos los productos registrados en la base de datos",
+                "operationId": "productos",
+                "requestBody": {},
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/productos/nuevo": {
+            "post": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Nuevo producto",
+                "description": "Servicio para el registro de un nuevo producto",
+                "operationId": "productos/nuevo",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "precio",
+                                    "unidades"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "description": "Nombre del producto a crear",
+                                        "type": "string",
+                                        "maxLength": 150,
+                                        "example": "Nombre del producto"
+                                    },
+                                    "precio": {
+                                        "description": "Precio del producto",
+                                        "type": "float",
+                                        "example": 150000
+                                    },
+                                    "unidades": {
+                                        "description": "Unidades disponibles del producto",
+                                        "type": "integer",
+                                        "example": 150
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/productos/buscar/{producto}": {
+            "get": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Consultar producto por ID",
+                "description": "Servicio para consultar un producto en específicdo",
+                "operationId": "productos/buscar/{producto}",
+                "parameters": [
+                    {
+                        "name": "producto",
+                        "in": "path",
+                        "description": "ID del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/productos/actualizar/{producto}": {
+            "put": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Actualizar producto",
+                "description": "Servicio para la actualización de datos de un producto",
+                "operationId": "productos/actualizar/{producto}",
+                "parameters": [
+                    {
+                        "name": "producto",
+                        "in": "path",
+                        "description": "ID del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "description": "Nombre del producto modificado",
+                                        "type": "string",
+                                        "maxLength": 150,
+                                        "example": "Nombre del producto"
+                                    },
+                                    "precio": {
+                                        "description": "Precio del producto modificado",
+                                        "type": "float",
+                                        "example": 150000
+                                    },
+                                    "unidades": {
+                                        "description": "Unidades disponibles del producto modificadas",
+                                        "type": "integer",
+                                        "example": 150
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/productos/eliminar/{producto}": {
+            "delete": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Eliminar producto",
+                "description": "Servicio para eliminar un producto",
+                "operationId": "productos/eliminar/{producto}",
+                "parameters": [
+                    {
+                        "name": "producto",
+                        "in": "path",
+                        "description": "ID del producto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/productos/carga": {
+            "post": {
+                "tags": [
+                    "Productos"
+                ],
+                "summary": "Carga masiva productos",
+                "description": "Servicio para el registro masivo de productos por medio de un archivo CSV",
+                "operationId": "productos/carga",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "archivo": {
+                                        "title": "archivo",
+                                        "description": "Archivo CSV",
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/reporte/ventas": {
+            "post": {
+                "tags": [
+                    "Informes"
+                ],
+                "summary": "Ventas por fecha",
+                "description": "Servicio para consultar las ventas realizadas de acuerdo al rango de fechas. <b>El informe lo encontrarán en la carpeta storage/app/public del proyecto</b>",
+                "operationId": "reporte/ventas",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "inicio": {
+                                        "description": "Fecha inicial de ventas (YYYY-MM-DD)",
+                                        "type": "string",
+                                        "example": "2022-02-17"
+                                    },
+                                    "fin": {
+                                        "description": "Fecha final de ventas (YYYY-MM-DD)",
+                                        "type": "string",
+                                        "example": "2022-02-20"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transacción exitosa",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    },
+                    "403": {
+                        "description": "Acceso denegado"
+                    },
+                    "400": {
+                        "description": "Petición no válida"
+                    },
+                    "404": {
+                        "description": "Servicio no encontrado"
+                    },
+                    "500": {
+                        "description": "Error de servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "bearerAuth",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Usuarios - Autenticación",
+            "description": "Registro, login e información de usuario"
+        },
+        {
+            "name": "Productos",
+            "description": "CRUD de productos y carga masiva"
+        },
+        {
+            "name": "Carrito",
+            "description": "Agregar, eliminar, resumen y compra del carrito de compras"
+        },
+        {
+            "name": "Informes",
+            "description": "Sección de reportes"
+        }
+    ]
+}

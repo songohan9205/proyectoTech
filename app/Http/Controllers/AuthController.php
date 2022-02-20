@@ -11,6 +11,51 @@ class AuthController extends Controller
 {
 
     /**
+     * @OA\Post(
+     *     path="/auth/usuarios/registro",
+     *     summary="Nuevo usuario",
+     *     description="Servicio para el registro de un nuevo usuario",
+     *     operationId="usuarios/registro",
+     *     tags={"Usuarios - Autenticación"},     
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent( required={"name", "email", "password"},
+     *               @OA\Property(property="name", type="string", example="Johan", maxLength=150, description="Nombre del usuario a registrar"),
+     *               @OA\Property(property="email", type="string", example="correo@ejemplo.com", description="Correo del usuario (utilizado para el login)"),
+     *               @OA\Property(property="password", type="string", example="contrasena123456", description="Contraseña del usuario"),
+     *          ),
+     *      ),       
+     *      @OA\Response(
+     *          response=200,
+     *          description="Transacción exitosa",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *      ),     
+     *      @OA\Response(
+     *          response=401,
+     *          description="No autenticado",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Acceso denegado"
+     *      ),
+     *       @OA\Response(
+     *           response=400,
+     *           description="Petición no válida"
+     *      ),
+     *      @OA\Response(
+     *           response=404,
+     *           description="Servicio no encontrado"
+     *       ),
+     *       @OA\Response(
+     *           response=500,
+     *           description="Error de servidor"
+     *       ),
+     * )
+     */
+
+    /**
      * Función para el registro de un nuevo usuario
      * @author Johan Morales     
      * @param  \Illuminate\Http\Request  $request
@@ -36,6 +81,50 @@ class AuthController extends Controller
             return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción', 'Data' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * @OA\Post(
+     *     path="/auth/usuarios/login",
+     *     summary="Login",
+     *     description="Servicio para la autenticación del usuario y la generación del token, que debe ser utilizado para consumir los Endpoints",
+     *     operationId="usuarios/login",
+     *     tags={"Usuarios - Autenticación"},     
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent( required={"email", "password"},     
+     *               @OA\Property(property="email", type="string", example="correo@ejemplo.com", description="Correo registrado"),
+     *               @OA\Property(property="password", type="string", example="contrasena123456", description="Contraseña registrada"),
+     *          ),
+     *      ),       
+     *      @OA\Response(
+     *          response=200,
+     *          description="Transacción exitosa",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *      ),     
+     *      @OA\Response(
+     *          response=401,
+     *          description="No autenticado",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Acceso denegado"
+     *      ),
+     *       @OA\Response(
+     *           response=400,
+     *           description="Petición no válida"
+     *      ),
+     *      @OA\Response(
+     *           response=404,
+     *           description="Servicio no encontrado"
+     *       ),
+     *       @OA\Response(
+     *           response=500,
+     *           description="Error de servidor"
+     *       ),
+     * )
+     */
 
     /**
      * Función para el inicio de sesión
@@ -91,6 +180,45 @@ class AuthController extends Controller
             return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción', 'Data' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/auth/usuarios/info",
+     *     summary="Información del usuario",
+     *     description="Servicio para ver la información del usuario validado por el token que se está utilizando",
+     *     operationId="usuarios/info",
+     *     tags={"Usuarios - Autenticación"},  
+     *     security={{"bearerAuth":{}}},   
+     *     @OA\RequestBody(),       
+     *      @OA\Response(
+     *          response=200,
+     *          description="Transacción exitosa",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *      ),     
+     *      @OA\Response(
+     *          response=401,
+     *          description="No autenticado",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Acceso denegado"
+     *      ),
+     *       @OA\Response(
+     *           response=400,
+     *           description="Petición no válida"
+     *      ),
+     *      @OA\Response(
+     *           response=404,
+     *           description="Servicio no encontrado"
+     *       ),
+     *       @OA\Response(
+     *           response=500,
+     *           description="Error de servidor"
+     *       ),
+     * )
+     */
 
     /**
      * Función para obtener información del usuario

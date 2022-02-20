@@ -18,6 +18,51 @@ class CarritoController extends Controller
 {
 
     /**
+     * @OA\Post(
+     *     path="/auth/carrito/agregar",
+     *     summary="Agregar productos al carrito",
+     *     description="Servicio para adición de productos al carrito de compra",
+     *     operationId="carrito/agregar",
+     *     tags={"Carrito"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent( 
+     *               @OA\Property(property="id", type="integer", example=1, description="ID del producto a comprar"),
+     *               @OA\Property(property="cantidad", type="integer", example=20, description="Cantidad a comprar del producto agregado"),     
+     *          ),
+     *      ),     
+     *      @OA\Response(
+     *          response=200,
+     *          description="Transacción exitosa",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *      ),     
+     *      @OA\Response(
+     *          response=401,
+     *          description="No autenticado",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Acceso denegado"
+     *      ),
+     *       @OA\Response(
+     *           response=400,
+     *           description="Petición no válida"
+     *      ),
+     *      @OA\Response(
+     *           response=404,
+     *           description="Servicio no encontrado"
+     *       ),
+     *       @OA\Response(
+     *           response=500,
+     *           description="Error de servidor"
+     *       ),
+     * )
+     */
+
+    /**
      * Función para el registro de un nuevo producto
      * @author Johan Morales     
      * @param  \Illuminate\Http\Request  $request
@@ -49,6 +94,45 @@ class CarritoController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/auth/carrito/resumen",
+     *     summary="Resumen carrito",
+     *     description="Servicio para consultar los productos agregados al carrito",
+     *     operationId="carrito/resumen",
+     *     tags={"Carrito"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(),     
+     *      @OA\Response(
+     *          response=200,
+     *          description="Transacción exitosa",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *      ),     
+     *      @OA\Response(
+     *          response=401,
+     *          description="No autenticado",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Acceso denegado"
+     *      ),
+     *       @OA\Response(
+     *           response=400,
+     *           description="Petición no válida"
+     *      ),
+     *      @OA\Response(
+     *           response=404,
+     *           description="Servicio no encontrado"
+     *       ),
+     *       @OA\Response(
+     *           response=500,
+     *           description="Error de servidor"
+     *       ),
+     * )
+     */
+
+    /**
      * Función para ver el resumen de compra del carrito
      * @author Johan Morales     
      * @param  \Illuminate\Http\Request  $request
@@ -63,6 +147,50 @@ class CarritoController extends Controller
             return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción', 'Data' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/auth/carrito/eliminar",
+     *     summary="Eliminar productos carrito",
+     *     description="Servicio para eliminar productos agregados al carrito",
+     *     operationId="carrito/eliminar",
+     *     tags={"Carrito"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *          required=true,
+     *          @OA\JsonContent( 
+     *               @OA\Property(property="id", type="integer", example=1, description="ID del producto a eliminar del carrito"),     
+     *          ),
+     *      ),     
+     *      @OA\Response(
+     *          response=200,
+     *          description="Transacción exitosa",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *      ),     
+     *      @OA\Response(
+     *          response=401,
+     *          description="No autenticado",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Acceso denegado"
+     *      ),
+     *       @OA\Response(
+     *           response=400,
+     *           description="Petición no válida"
+     *      ),
+     *      @OA\Response(
+     *           response=404,
+     *           description="Servicio no encontrado"
+     *       ),
+     *       @OA\Response(
+     *           response=500,
+     *           description="Error de servidor"
+     *       ),
+     * )
+     */
 
     /**
      * Función para eliminar un producto del carrito
@@ -80,6 +208,45 @@ class CarritoController extends Controller
             return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción', 'Data' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/auth/carrito/comprar",
+     *     summary="Finalizar compra",
+     *     description="Servicio para realizar la compra de los productos agregados al carrito",
+     *     operationId="carrito/comprar",
+     *     tags={"Carrito"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(),     
+     *      @OA\Response(
+     *          response=200,
+     *          description="Transacción exitosa",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *          )
+     *      ),     
+     *      @OA\Response(
+     *          response=401,
+     *          description="No autenticado",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Acceso denegado"
+     *      ),
+     *       @OA\Response(
+     *           response=400,
+     *           description="Petición no válida"
+     *      ),
+     *      @OA\Response(
+     *           response=404,
+     *           description="Servicio no encontrado"
+     *       ),
+     *       @OA\Response(
+     *           response=500,
+     *           description="Error de servidor"
+     *       ),
+     * )
+     */
 
     /**
      * Función para la compra de productos del carrito
@@ -120,7 +287,7 @@ class CarritoController extends Controller
                         ]);
 
                         ProductosModel::where('id', $data->id)
-                            ->update(['unidades' => DB::raw('unidades - '.$data->quantity)]);
+                            ->update(['unidades' => DB::raw('unidades - ' . $data->quantity)]);
                     }
                 } catch (\Throwable $e) {
                     return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción al guardar el detalle de la compra', 'Data' => $e->getMessage()], 500);
@@ -140,7 +307,7 @@ class CarritoController extends Controller
         } catch (\Throwable $e) {
             return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción', 'Data' => $e->getMessage()], 500);
         }
-    }   
+    }
 
     /**
      * Función para consultar la información del usuario logeado
