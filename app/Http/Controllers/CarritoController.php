@@ -8,7 +8,6 @@ use App\ProductosModel;
 use App\CompraModel;
 use App\DetalleCompraModel;
 use Cart;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Controlador para todo lo relacionado con el carrito de compras

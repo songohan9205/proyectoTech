@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ProductosImport;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use App\ProductosModel;
+use Illuminate\Support\Facades\File;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * Controlador para el CRUD de productos
@@ -121,6 +125,34 @@ class ProductosController extends Controller
 
             $delete = ProductosModel::where('id', $id)->delete();
             return response()->json(['Estado' => true, 'Respuesta' => 'Se ha eliminado el producto con Id: ' . $id, 'Data' => $delete], 200);
+        } catch (\Throwable $e) {
+            return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción', 'Data' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Función para carga masiva de productos
+     * @author Johan Morales    
+     * @param  \Illuminate\Http\Request  $request 
+     * @return \Illuminate\Http\Response JSON con la respuesta del proceso
+     */
+    public function cargaMasiva(Request $request)
+    {
+        try {
+
+            $extension = pathinfo($request->archivo->getClientOriginalName(), PATHINFO_EXTENSION);
+            $nameField = pathinfo($request->archivo->getClientOriginalName(), PATHINFO_FILENAME);
+            if ($extension == 'csv' || $extension == 'CSV') {
+                $file = $request->file('archivo');
+                $csv  = $nameField . '.' . $extension;
+                $file->move(storage_path('app'), $csv);
+                $path = storage_path('app/') . $csv;
+
+                Excel::import(new ProductosImport, $path);                
+                File::delete(storage_path('app/' . $csv));
+                return response()->json(['Estado' => true, 'Respuesta' => 'Se ha cargado en la base de datos los productos del CSV', 'Data' => []], 200);
+            }
+            return response()->json(['Estado' => true, 'Respuesta' => 'El archivo no puede ser procesado', 'Data' => 'Recuerde! Únicamente se procesan archivos .csv'], 200);
         } catch (\Throwable $e) {
             return response()->json(['Estado' => false, 'Respuesta' => 'Se ha generado una excepción', 'Data' => $e->getMessage()], 500);
         }

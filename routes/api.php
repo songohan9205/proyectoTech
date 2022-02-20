@@ -31,6 +31,7 @@ Route::group([
     ], function () {
         //Productos
         Route::resource('productos', 'ProductosController');
+        Route::post('/productos/carga', 'ProductosController@cargaMasiva')->name('productos/carga');
 
         //Carrito de compras
         Route::post('/carrito/agregar', 'CarritoController@agregarProducto')->name('carrito/agregar');
@@ -39,7 +40,7 @@ Route::group([
         Route::delete('/carrito/eliminar', 'CarritoController@eliminarProducto')->name('carrito/eliminar');
 
         //Usuarios
-        Route::get('usuarios/finalizar', 'AuthController@cerrarSesion')->name('usuarios/finalizar');
-        Route::get('usuarios/info', 'AuthController@infoUsuario')->name('usuarios/info');
+        Route::get('/usuarios/finalizar', 'AuthController@cerrarSesion')->name('usuarios/finalizar');
+        Route::get('/usuarios/info', 'AuthController@infoUsuario')->name('usuarios/info');
     });
 });
